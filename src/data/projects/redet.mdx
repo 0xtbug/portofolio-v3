@@ -1,0 +1,93 @@
+---
+name: ReDet
+type: side
+image: /redet.pngjpg
+sourceCode: https://github.com/0xtbug/ReDet
+technologies:
+  - JavaScript
+  - Chrome Extensions
+  - HTML
+  - CSS
+description: ReDet adalah ekstensi Chrome yang mendeteksi dan menganalisis implementasi Google reCAPTCHA pada situs web, mendukung deteksi real-time untuk reCAPTCHA v2, v3, dan Enterprise.
+---
+
+# ReDet | Google reCAPTCHA Detector & Analyzer
+![Preview](/redet.jpg)
+
+## Introduction
+**ReDet** adalah ekstensi Chrome yang dirancang untuk mendeteksi dan menganalisis implementasi **Google reCAPTCHA** di berbagai situs web.
+Mendukung deteksi **reCAPTCHA v2, v3**, termasuk versi Enterprise, ReDet memungkinkan pengguna melihat detail konfigurasi dan menyalin *site key* dengan mudah.
+
+Ekstensi ini sangat berguna bagi pengembang, peneliti keamanan, maupun penguji aplikasi web.
+
+---
+
+## 🌟 Key Features
+- 🔍 Deteksi **reCAPTCHA v2** dan **v3**
+- 🚀 Pemindaian halaman secara real-time
+- 💡 Dukungan deteksi reCAPTCHA Enterprise
+- 📋 Salin *site key* dengan sekali klik
+- 🎨 UI modern dan bersih
+
+---
+
+## 📦 Installation
+
+1. Unduh rilis terbaru dari [halaman rilis](https://github.com/0xtbug/ReDet/releases)
+2. Buka Chrome dan akses `chrome://extensions/`
+3. Aktifkan **Developer mode** (pojok kanan atas)
+4. Klik **Load unpacked** dan pilih folder ekstensi yang sudah diunduh
+
+---
+
+## 💻 Usage
+
+1. Klik ikon ekstensi di toolbar browser
+2. Tekan **Scan Page** untuk memindai halaman aktif
+3. Lihat detail lengkap implementasi reCAPTCHA yang terdeteksi
+4. Salin *site key* dan detail konfigurasi hanya dengan sekali klik
+
+---
+
+## 🔍 Detection Features
+
+### reCAPTCHA v2
+- Deteksi *site key*
+- Deteksi implementasi Enterprise
+- Detail konfigurasi lengkap
+
+### reCAPTCHA v3
+- Deteksi banyak *site key*
+- Deteksi implementasi Enterprise
+- Parameter *action*
+- Detail konfigurasi
+
+---
+
+## 🛠 Development
+
+### Prasyarat
+- Browser Chrome (versi terbaru direkomendasikan)
+- Git
+
+### Setup Development
+1. Clone repositori:
+   ```bash
+   git clone https://github.com/0xtbug/ReDet.git
+   cd ReDet
+   ```
+
+2. Muat ekstensi di Chrome:
+
+   * Buka `chrome://extensions/`
+   * Aktifkan **Developer mode**
+   * Klik **Load unpacked** dan pilih folder proyek yang sudah di-*clone*
+3. Workflow pengembangan:
+
+   * Ubah kode sumber sesuai kebutuhan
+   * *Refresh* ekstensi di `chrome://extensions/`
+   * Klik ikon *refresh* pada kartu ekstensi untuk menerapkan perubahan
+
+---
+
+Built with ❤️ untuk membantu analisis keamanan dan pengembangan web.

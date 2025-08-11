@@ -1,0 +1,64 @@
+---
+name: DeKode
+type: side
+image: /dekode.gif
+sourceCode: https://github.com/0xtbug/DeKode
+technologies:
+  - Python
+  - Base64
+  - Zlib
+description: DeKode adalah tools untuk mendekode string yang telah diencode menggunakan metode lambda, seperti yang dihasilkan oleh PyObfuscate. Mendukung berbagai metode decoding berbasis Base64, B16, B32, dan Zlib.
+---
+
+# DeKode | Lambda Encoded String Decoder
+![Screenshot](/dekode.gif)
+
+## 📌 Introduction
+**DeKode** adalah tools yang dirancang untuk mendekode string yang telah diencode menggunakan metode lambda, seperti yang dihasilkan oleh [PyObfuscate](https://github.com/htr-tech/PyObfuscate).
+Tools ini memudahkan proses decoding dengan dukungan berbagai metode umum berbasis **Base64**, **Base16 (B16)**, **Base32 (B32)**, dan **Zlib**.
+
+---
+
+## 🌟 Key Features
+- Mendekode string dengan metode:
+  - `Lambda base64.b16decode`
+  - `Lambda base64.b32decode`
+  - `Lambda base64.b64decode`
+  - `Lambda zlib.decompress(base64.b16decode)`
+  - `Lambda zlib.decompress(base64.b32decode)`
+  - `Lambda zlib.decompress(base64.b64decode)`
+
+---
+
+## 🛠 Installation
+1. **Clone repositori**
+   ```bash
+   git clone https://github.com/0xtbug/DeKode
+
+2. **Pindah ke direktori project**
+
+   ```bash
+   cd DeKode
+   ```
+
+3. **Install dependencies**
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+---
+
+## 💻 Usage
+
+1. Pindahkan script yang ingin didekode ke file `encode.txt`
+2. Jalankan tools:
+
+   ```bash
+   python main.py
+   ```
+3. Hasil decoding akan tersimpan di file `result.txt`
+
+---
+
+Built with ❤️ untuk memudahkan proses decoding string hasil obfuscation.

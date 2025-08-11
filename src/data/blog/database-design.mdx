@@ -1,0 +1,820 @@
+---
+pubDatetime: 2024-05-08
+title: Menguasai Desain Basis Data Relasional | Panduan Komprehensif
+category: backend
+series: backend-journey
+draft: false
+image: /og-images/articles/databse-design.jpg
+tags:
+  - backend
+  - learning
+  - webdev
+  - career
+description: Pengantar basis data relasional, sistem manajemennya, dan prinsip desain utama untuk penyimpanan dan organisasi data yang efisien.
+---
+
+![Gambar Sampul](/og-images/articles/database-design.jpg)
+
+## Pendahuluan
+
+Di dunia yang digerakkan oleh data saat ini, menyimpan dan mengelola informasi secara efisien sangat penting bagi bisnis dan organisasi dari segala ukuran. Basis data relasional telah muncul sebagai solusi ampuh untuk mengatur dan memanipulasi data secara terstruktur dan terukur. Dalam postingan blog ini, kita akan menjelajahi dasar-dasar basis data relasional, sistem manajemennya, dan prinsip-prinsip yang mendasari desain basis data yang efektif.
+
+---
+
+## Apa itu Basis Data?
+
+Basis data adalah kumpulan data terstruktur yang diatur dan disimpan sedemikian rupa sehingga memfasilitasi pengambilan, manipulasi, dan manajemen yang efisien. Anggap saja seperti lemari arsip digital, di mana alih-alih folder dan dokumen fisik, Anda memiliki tabel dan catatan yang tersusun rapi untuk akses mudah.
+
+## Apa itu Basis Data Relasional?
+
+Basis data relasional adalah jenis basis data yang mengatur data ke dalam tabel (relasi) dengan baris (catatan) dan kolom (field). Tabel-tabel ini saling terhubung melalui hubungan (relationships), memungkinkan data diakses dan digabungkan dalam berbagai cara. Bayangkan kumpulan lembar kerja, masing-masing mewakili aspek data Anda yang berbeda, tetapi dengan kemampuan untuk menautkan dan menggabungkan informasi di seluruh lembar kerja tersebut dengan mulus.
+
+## RDBMS
+
+Relational Database Management System (RDBMS) adalah aplikasi perangkat lunak yang dirancang untuk membuat, mengelola, dan berinteraksi dengan basis data relasional. Ini menyediakan kerangka kerja terstruktur untuk menyimpan, mengambil, dan memanipulasi data di dalam basis data. Beberapa contoh populer RDBMS termasuk MySQL, PostgreSQL, Oracle, dan Microsoft SQL Server.
+
+---
+
+## Pengantar SQL
+
+SQL (Structured Query Language) adalah bahasa pemrograman standar yang digunakan untuk berinteraksi dengan basis data relasional. Ini memungkinkan Anda untuk membuat, membaca, memperbarui, dan menghapus data di dalam basis data, serta mendefinisikan dan memodifikasi struktur basis data itu sendiri. SQL seperti bahasa universal yang memungkinkan Anda berkomunikasi dengan berbagai platform RDBMS.
+
+## Konvensi Penamaan
+
+Dalam SQL, mengikuti konvensi penamaan yang konsisten sangat penting untuk kejelasan dan pemeliharaan. Berikut adalah contohnya:
+
+```sql
+-- Konvensi penamaan yang baik
+CREATE TABLE customers (
+   customer_id INT PRIMARY KEY,
+   first_name VARCHAR(100),
+   last_name VARCHAR(100),
+   email VARCHAR(100)
+);
+```
+
+## Apa itu Desain Basis Data?
+
+Desain basis data adalah proses pembuatan struktur yang efisien dan terorganisir untuk menyimpan dan mengelola data dalam basis data. Ini melibatkan pendefinisian tabel, kolom, hubungan, dan kendala untuk memastikan integritas data, meminimalkan redundansi, dan mengoptimalkan kinerja. Desain basis data yang tepat adalah fondasi untuk membangun aplikasi yang kuat dan terukur.
+
+![Gambar Desain Basis Data](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/de0l7km0yufdp2ssak3s.png)
+
+## Integritas Data
+
+Integritas data mengacu pada akurasi, konsistensi, dan keandalan data yang disimpan dalam basis data. Ini memastikan bahwa data mengikuti aturan dan kendala tertentu, mencegah kesalahan dan inkonsistensi. Ada tiga jenis integritas data:
+
+1.  **Integritas Entitas**: Memastikan setiap baris dalam tabel dapat diidentifikasi secara unik oleh kunci primer, dan kunci primer tidak boleh memiliki nilai null.
+2.  **Integritas Referensial**: Mempertahankan hubungan antar tabel dengan memastikan nilai kunci asing di satu tabel cocok dengan nilai kunci primer di tabel lain.
+3.  **Integritas Domain**: Menerapkan entri yang valid untuk kolom tertentu dengan membatasi tipe data, format, dan rentang nilai yang dapat disimpan.
+
+```sql
+-- Contoh: Menerapkan integritas data
+CREATE TABLE orders (
+    order_id INT PRIMARY KEY, -- Integritas entitas
+    customer_id INT FOREIGN KEY REFERENCES customers(customer_id), -- Integritas referensial
+    order_date DATE NOT NULL, -- Integritas domain
+    total_amount DECIMAL(10, 2) CHECK (total_amount >= 0) -- Integritas domain
+);
+```
+
+## Istilah Basis Data
+
+-   **Tabel**: Kumpulan data terkait yang diatur dalam baris dan kolom.
+-   **Baris**: Sebuah instansi tunggal atau entri dalam tabel (juga dikenal sebagai catatan atau tuple).
+-   **Kolom**: Karakteristik atau properti tertentu dari data dalam tabel (juga dikenal sebagai field atau atribut).
+-   **Kunci Primer (Primary Key)**: Sebuah kolom atau kombinasi kolom yang secara unik mengidentifikasi setiap baris dalam tabel.
+-   **Kunci Asing (Foreign Key)**: Sebuah kolom atau kombinasi kolom yang mereferensikan kunci primer dari tabel lain, membangun hubungan antara kedua tabel.
+-   **Join**: Sebuah operasi yang menggabungkan baris dari dua atau lebih tabel berdasarkan kolom terkait.
+-   **Indeks**: Struktur data yang meningkatkan kinerja operasi pengambilan data dengan membuat representasi data yang terurut dalam tabel.
+-   **View**: Tabel virtual yang dihasilkan secara dinamis dari satu atau lebih tabel dasar.
+-   **Stored Procedure**: Kumpulan pernyataan SQL yang telah dikompilasi sebelumnya yang dapat dieksekusi sebagai satu unit.
+-   **Trigger**: Jenis stored procedure khusus yang secara otomatis dieksekusi ketika peristiwa tertentu terjadi dalam tabel, seperti pernyataan INSERT, UPDATE, atau DELETE.
+
+## Nilai Atomik
+
+Dalam desain basis data, penting untuk menyimpan nilai atomik, yang berarti menyimpan potongan informasi terkecil yang tidak dapat dibagi lagi. Prinsip ini membantu menjaga integritas data dan menghindari redundansi.
+
+Misalnya, alih-alih menyimpan nama lengkap pelanggan dalam satu kolom, lebih baik memisahkannya menjadi kolom nama depan dan nama belakang. Dengan cara ini, Anda dapat dengan mudah mencari, mengurutkan, atau memanipulasi setiap bagian nama secara independen.
+
+```sql
+-- Contoh: Menyimpan nilai atomik
+CREATE TABLE customers (
+    customer_id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    email VARCHAR(100)
+);
+```
+
+---
+
+## Pengantar Kunci (Keys)
+
+Kunci adalah komponen penting dalam desain basis data yang membantu memastikan integritas data dan membangun hubungan antar tabel. Kunci berfungsi sebagai pengidentifikasi unik untuk catatan dan memungkinkan pengambilan serta manipulasi data yang efisien.
+
+## Indeks Kunci Primer
+
+Kunci primer adalah kolom atau kombinasi kolom yang secara unik mengidentifikasi setiap catatan dalam tabel. Kunci ini memastikan bahwa setiap catatan unik dan dapat dengan mudah ditemukan. Kunci primer biasanya diindeks untuk meningkatkan kinerja kueri.
+
+```sql
+CREATE TABLE customers (
+    customer_id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    email VARCHAR(100)
+);
+```
+
+## Tabel Referensi (Lookup Table)
+
+Tabel referensi, juga dikenal sebagai tabel acuan atau tabel kode, adalah tabel yang berisi kumpulan nilai yang telah ditentukan sebelumnya yang dapat digunakan untuk mengisi kolom di tabel lain. Tabel referensi membantu menjaga integritas data dengan memastikan konsistensi dan mengurangi redundansi.
+
+```sql
+-- Tabel referensi untuk kategori produk
+CREATE TABLE product_categories (
+    category_id INT PRIMARY KEY,
+    category_name VARCHAR(100)
+);
+
+-- Tabel produk mereferensikan tabel referensi
+CREATE TABLE products (
+    product_id INT PRIMARY KEY,
+    product_name VARCHAR(100),
+    category_id INT,
+    FOREIGN KEY (category_id) REFERENCES product_categories(category_id)
+);
+```
+
+## Superkey dan Candidate Key
+
+Superkey adalah sekumpulan satu atau lebih kolom dalam tabel yang secara unik mengidentifikasi setiap catatan. Candidate key adalah superkey minimal, yang berarti tidak mengandung kolom yang tidak perlu. Dengan kata lain, candidate key adalah superkey dengan jumlah kolom minimal yang diperlukan untuk mengidentifikasi setiap catatan secara unik.
+
+## Kunci Primer dan Kunci Alternatif
+
+Kunci primer adalah candidate key yang dipilih sebagai pengidentifikasi unik utama untuk suatu tabel. Kunci alternatif, juga dikenal sebagai kunci unik, adalah candidate key lain yang dapat dipilih sebagai kunci primer tetapi tidak.
+
+```sql
+CREATE TABLE employees (
+    employee_id INT PRIMARY KEY,
+    email VARCHAR(100) UNIQUE, -- Kunci alternatif
+    first_name VARCHAR(50),
+    last_name VARCHAR(50)
+);
+```
+
+## Kunci Surrogate dan Kunci Natural
+
+Kunci surrogate adalah kunci artifisial (seringkali berupa angka berurutan atau GUID) yang digunakan sebagai kunci primer dalam tabel. Kunci ini tidak memiliki arti atau hubungan yang melekat pada data itu sendiri. Kunci natural, di sisi lain, adalah kunci yang berasal dari data itu sendiri, seperti ID karyawan atau kode produk.
+
+```sql
+-- Kunci surrogate
+CREATE TABLE orders (
+    order_id INT PRIMARY KEY IDENTITY(1,1), -- Kunci surrogate
+    customer_name VARCHAR(100),
+    order_date DATE
+);
+
+-- Kunci natural
+CREATE TABLE products (
+    product_code VARCHAR(10) PRIMARY KEY, -- Kunci natural
+    product_name VARCHAR(100),
+    price DECIMAL(10,2)
+);
+```
+
+## Haruskah Saya Menggunakan Kunci Surrogate atau Kunci Natural?
+
+Pilihan antara kunci surrogate dan kunci natural bergantung pada beberapa faktor, termasuk sifat data, kemungkinan perubahan data, dan potensi duplikasi atau konflik.
+
+Kunci surrogate seringkali lebih disukai karena:
+
+-   Tidak dapat diubah (Immutable): Kunci tidak berubah seiring waktu, bahkan jika data berubah.
+-   Dijamin unik: Kunci dihasilkan oleh sistem basis data, memastikan keunikan.
+-   Opaque: Kunci tidak mengungkapkan informasi apa pun tentang data itu sendiri, yang dapat bermanfaat untuk keamanan dan privasi.
+
+Kunci natural, di sisi lain, dapat menguntungkan ketika:
+
+-   Data memiliki keunikan yang melekat, seperti kode produk atau ID karyawan.
+-   Data tidak mungkin berubah seiring waktu, mengurangi risiko konflik atau duplikasi.
+-   Ada kebutuhan akan pengidentifikasi yang mudah dibaca dan bermakna bagi manusia.
+
+## Kunci Asing (Foreign Key)
+
+Kunci asing adalah kolom atau kombinasi kolom dalam satu tabel yang mereferensikan kunci primer dari tabel lain. Kunci ini membangun tautan antara kedua tabel dan memberlakukan integritas referensial, memastikan bahwa data dalam tabel anak valid dan konsisten dengan data dalam tabel induk.
+
+```sql
+CREATE TABLE orders (
+    order_id INT PRIMARY KEY,
+    customer_id INT,
+    order_date DATE,
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+);
+```
+
+## Kunci Asing NOT NULL
+
+Dalam beberapa kasus, mungkin diinginkan untuk memiliki kendala NOT NULL pada kolom kunci asing, yang berarti kolom tersebut tidak boleh memiliki nilai null. Kendala ini memastikan bahwa setiap catatan dalam tabel anak terkait dengan catatan yang valid dalam tabel induk.
+
+```sql
+CREATE TABLE orders (
+    order_id INT PRIMARY KEY,
+    customer_id INT NOT NULL,
+    order_date DATE,
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+);
+```
+
+## Kendala Kunci Asing (Foreign Key Constraints)
+
+Kendala kunci asing mendefinisikan aturan untuk integritas referensial antar tabel. Kendala ini dapat mencakup tindakan yang harus diambil ketika catatan yang direferensikan dalam tabel induk diperbarui atau dihapus, seperti:
+
+-   `CASCADE`: Ketika catatan dalam tabel induk diperbarui atau dihapus, catatan yang sesuai dalam tabel anak juga diperbarui atau dihapus.
+-   `SET NULL`: Ketika catatan dalam tabel induk diperbarui atau dihapus, nilai kunci asing yang sesuai dalam tabel anak diatur menjadi NULL.
+-   `NO ACTION`: Ketika catatan dalam tabel induk diperbarui atau dihapus, nilai kunci asing yang sesuai dalam tabel anak tetap tidak berubah, dan operasi digulirkan kembali jika melanggar integritas referensial.
+
+```sql
+CREATE TABLE orders (
+    order_id INT PRIMARY KEY,
+    customer_id INT,
+    order_date DATE,
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON UPDATE CASCADE ON DELETE SET NULL
+);
+```
+
+## Kunci Sederhana, Kunci Komposit, Kunci Gabungan
+
+-   Kunci sederhana adalah satu kolom yang digunakan sebagai kunci primer atau kunci asing.
+-   Kunci komposit adalah kombinasi dari dua atau lebih kolom yang digunakan sebagai kunci primer atau kunci asing.
+-   Kunci gabungan adalah kombinasi dari dua atau lebih kunci sederhana yang digunakan sebagai kunci asing.
+
+```sql
+-- Kunci sederhana
+CREATE TABLE orders (
+    order_id INT PRIMARY KEY,
+    ...
+);
+
+-- Kunci komposit
+CREATE TABLE order_items (
+    order_id INT,
+    product_id INT,
+    quantity INT,
+    PRIMARY KEY (order_id, product_id)
+);
+
+-- Kunci gabungan
+CREATE TABLE shipments (
+    shipment_id INT PRIMARY KEY,
+    order_id INT,
+    product_id INT,
+    FOREIGN KEY (order_id, product_id) REFERENCES order_items(order_id, product_id)
+);
+```
+
+---
+
+## Hubungan (Relationships)
+
+Hubungan adalah landasan basis data relasional, memungkinkan Anda menghubungkan dan menggabungkan data dari tabel yang berbeda. Ada tiga jenis hubungan utama:
+
+![Gambar Hubungan](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/qadj6qd495g7yovdcx2d.jpg)
+
+## Hubungan Satu-ke-Satu (One-to-One)
+
+Dalam hubungan satu-ke-satu, setiap catatan dalam satu tabel dikaitkan dengan tepat satu catatan dalam tabel lain, dan sebaliknya. Misalnya, pertimbangkan basis data di mana setiap karyawan memiliki satu dan hanya satu manajer, dan setiap manajer mengelola satu dan hanya satu karyawan. Jenis hubungan ini relatif jarang dalam praktik.
+
+![Gambar One to One](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/qm0xf8h40rktgqzbp4o4.png)
+
+## Hubungan Satu-ke-Banyak (One-to-Many)
+
+Dalam hubungan satu-ke-banyak, setiap catatan dalam satu tabel (sisi "satu") dapat dikaitkan dengan beberapa catatan dalam tabel lain (sisi "banyak"). Misalnya, dalam basis data untuk sekolah, satu guru dapat mengajar beberapa kelas, tetapi setiap kelas diajar oleh hanya satu guru.
+
+![Gambar One to Many](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/qe9iuj8n0n3b1cj24pdf.png)
+
+## Hubungan Banyak-ke-Banyak (Many-to-Many)
+
+Dalam hubungan banyak-ke-banyak, setiap catatan dalam satu tabel dapat dikaitkan dengan beberapa catatan dalam tabel lain, dan sebaliknya. Misalnya, dalam basis data untuk universitas, seorang siswa dapat mendaftar di beberapa mata kuliah, dan setiap mata kuliah dapat memiliki beberapa siswa yang mendaftar.
+
+![Gambar Hubungan Banyak-ke-Banyak](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/r2prop1r97o0cj7cr6qw.jpg)
+
+### Ringkasan Hubungan
+
+-   Satu-ke-Satu: Satu catatan di Tabel A terkait dengan satu dan hanya satu catatan di Tabel B, dan sebaliknya.
+-   Satu-ke-Banyak: Satu catatan di Tabel A dapat terkait dengan beberapa catatan di Tabel B, tetapi satu catatan di Tabel B hanya dapat terkait dengan satu catatan di Tabel A.
+-   Banyak-ke-Banyak: Beberapa catatan di Tabel A dapat terkait dengan beberapa catatan di Tabel B, dan sebaliknya.
+
+## Mendesain Hubungan (Implementasi SQL)
+
+**1 - Mendesain Hubungan Satu-ke-Satu**
+
+Untuk mendesain hubungan satu-ke-satu, Anda dapat menyertakan semua kolom dari kedua tabel dalam satu tabel atau membuat dua tabel terpisah dan menggunakan kendala kunci asing untuk menautkannya.
+
+```sql
+-- Opsi 1: Satu tabel
+CREATE TABLE employees (
+    employee_id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    manager_first_name VARCHAR(50),
+    manager_last_name VARCHAR(50)
+);
+
+-- Opsi 2: Dua tabel dengan kunci asing
+CREATE TABLE employees (
+    employee_id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    manager_id INT UNIQUE,
+    FOREIGN KEY (manager_id) REFERENCES employees(employee_id)
+);
+```
+
+2 - **Mendesain Hubungan Satu-ke-Banyak**
+
+Untuk mendesain hubungan satu-ke-banyak, Anda biasanya membuat dua tabel: tabel induk (sisi "satu") dan tabel anak (sisi "banyak"). Tabel anak menyertakan kolom kunci asing yang mereferensikan kunci primer tabel induk.
+
+```sql
+-- Tabel induk
+CREATE TABLE teachers (
+    teacher_id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50)
+);
+
+-- Tabel anak
+CREATE TABLE classes (
+    class_id INT PRIMARY KEY,
+    class_name VARCHAR(100),
+    teacher_id INT,
+    FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id)
+);
+```
+
+**3 - Mendesain Hubungan Banyak-ke-Banyak**
+
+Untuk mendesain hubungan banyak-ke-banyak, Anda biasanya membuat tabel ketiga (disebut tabel penghubung atau tabel asosiatif) yang menghubungkan kedua tabel utama. Tabel penghubung ini menyertakan kolom kunci asing yang mereferensikan kunci primer.
+
+```sql
+-- Tabel 1
+CREATE TABLE students (
+    student_id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50)
+);
+
+-- Tabel 2
+CREATE TABLE courses (
+    course_id INT PRIMARY KEY,
+    course_name VARCHAR(100),
+    description TEXT
+);
+
+-- Tabel penghubung atau perantara
+CREATE TABLE enrollments (
+    enrollment_id INT PRIMARY KEY,
+    student_id INT,
+    course_id INT,
+    FOREIGN KEY (student_id) REFERENCES students(student_id),
+    FOREIGN KEY (course_id) REFERENCES courses(course_id)
+);
+```
+
+## Tabel Induk (Parent Tables) dan Tabel Anak (Child Tables)
+
+Dalam hubungan satu-ke-banyak atau banyak-ke-banyak, tabel di sisi **"satu"** sering disebut sebagai tabel induk (parent table), sedangkan tabel di sisi **"banyak"** disebut tabel anak (child table). Tabel anak berisi kunci asing yang mereferensikan kunci primer tabel induk.
+
+Misalnya, dalam hubungan guru-kelas, tabel `teachers` adalah tabel induk, dan tabel `classes` adalah tabel anak. Demikian pula, dalam hubungan siswa-mata kuliah, tabel `students` dan `courses` adalah tabel induk, sedangkan `enrollm`
+
+## Pengantar Pemodelan Hubungan Entitas (Entity Relationship Modeling)
+
+Pemodelan Hubungan Entitas (ER Modeling) adalah teknik yang digunakan dalam desain basis data untuk merepresentasikan struktur logis basis data secara visual. Ini membantu mengidentifikasi entitas (tabel), atribut (kolom), dan hubungan di antara keduanya, sehingga lebih mudah untuk memahami dan mengomunikasikan desain basis data.
+
+Diagram ER terdiri dari komponen-komponen berikut:
+
+-   **Entitas**: Direpresentasikan oleh persegi panjang, entitas adalah tabel atau objek dalam basis data.
+-   **Atribut**: Tercantum di dalam persegi panjang entitas, atribut adalah kolom atau field yang menggambarkan entitas.
+-   **Hubungan**: Direpresentasikan oleh garis yang menghubungkan entitas, hubungan menggambarkan asosiasi antar entitas.
+
+## Kardinalitas
+
+Kardinalitas mendefinisikan hubungan numerik antara dua entitas. Ini menentukan jumlah maksimum instansi satu entitas yang dapat dikaitkan dengan satu instansi entitas lain. Kardinalitas yang paling umum adalah:
+
+-   Satu-ke-Satu (1:1): Satu instansi Entitas A dapat dikaitkan dengan paling banyak satu instansi Entitas B, dan sebaliknya.
+-   Satu-ke-Banyak (1:N): Satu instansi Entitas A dapat dikaitkan dengan beberapa instansi Entitas B, tetapi satu instansi Entitas B hanya dapat dikaitkan dengan satu instansi Entitas A.
+-   Banyak-ke-Banyak (M:N): Beberapa instansi Entitas A dapat dikaitkan dengan beberapa instansi Entitas B, dan sebaliknya.
+
+Dalam diagram ER, kardinalitas direpresentasikan menggunakan notasi spesifik, seperti garis tunggal untuk satu-ke-satu, garis dengan panah untuk satu-ke-banyak, dan garis dengan panah di kedua ujung untuk hubungan banyak-ke-banyak.
+
+![Gambar Kardinalitas](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/nmife5ost450cgntriyi.png)
+
+## Modalitas
+
+Modalitas mengacu pada apakah keberadaan instansi entitas bergantung pada hubungannya dengan entitas lain. Ada dua jenis modalitas:
+
+-   Modalitas parsial: Keberadaan suatu instansi tidak bergantung pada hubungannya dengan entitas lain. Misalnya, seorang pelanggan dapat ada tanpa memiliki pesanan apa pun.
+-   Modalitas total: Keberadaan suatu instansi bergantung pada hubungannya dengan entitas lain. Misalnya, item pesanan tidak dapat ada tanpa pesanan.
+
+Dalam diagram ER, modalitas direpresentasikan menggunakan notasi spesifik, seperti bilah tunggal untuk modalitas parsial dan bilah ganda untuk modalitas total.
+
+---
+
+## Pengantar Normalisasi Basis Data
+
+Normalisasi basis data adalah proses pengorganisasian data dalam basis data untuk mengurangi redundansi, meminimalkan anomali data (anomali penyisipan, pembaruan, dan penghapusan), dan meningkatkan integritas data. Ini melibatkan pemecahan basis data menjadi tabel-tabel yang lebih kecil dan pendefinisian hubungan di antara mereka berdasarkan aturan atau bentuk normal tertentu.
+
+Tujuan utama normalisasi basis data adalah:
+
+-   Menghilangkan data yang redundan
+-   Memastikan integritas data
+-   Memfasilitasi manipulasi dan pemeliharaan data
+
+Ada beberapa bentuk normal dalam normalisasi basis data, masing-masing dibangun di atas yang sebelumnya. Bentuk normal yang paling umum digunakan adalah:
+
+1.  Bentuk Normal Pertama (1NF)
+2.  Bentuk Normal Kedua (2NF)
+3.  Bentuk Normal Ketiga (3NF)
+
+## 1NF (Bentuk Normal Pertama Normalisasi Basis Data)
+
+Bentuk Normal Pertama (1NF) adalah bentuk normalisasi yang paling dasar. Ini menyatakan bahwa atribut (kolom) dalam tabel harus memiliki nilai atomik, yang berarti setiap sel dalam tabel harus berisi nilai tunggal, bukan sekumpulan nilai.
+
+Misalnya, pertimbangkan sebuah tabel dengan kolom bernama "PhoneNumbers" yang menyimpan beberapa nomor telepon untuk pelanggan. Ini melanggar 1NF karena kolom tersebut berisi sekumpulan nilai alih-alih nilai tunggal. Untuk sesuai dengan 1NF, Anda perlu memisahkan nomor telepon ke dalam kolom individual atau membuat tabel terpisah untuk nomor telepon.
+
+```sql
+-- Melanggar 1NF
+CREATE TABLE customers (
+    customer_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    phone_numbers VARCHAR(200) -- Menyimpan beberapa nomor telepon, melanggar 1NF
+);
+
+-- Sesuai dengan 1NF
+CREATE TABLE customers (
+    customer_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    phone1 VARCHAR(20),
+    phone2 VARCHAR(20),
+    phone3 VARCHAR(20)
+);
+```
+
+## 2NF (Bentuk Normal Kedua Normalisasi Basis Data)
+
+Bentuk Normal Kedua (2NF) dibangun di atas 1NF dengan mengatasi masalah ketergantungan parsial. Sebuah tabel berada dalam 2NF jika tabel tersebut berada dalam 1NF dan setiap atribut non-primer (kolom) sepenuhnya bergantung pada seluruh kunci primer.
+
+Dengan kata lain, jika sebuah tabel memiliki kunci primer komposit (terdiri dari beberapa kolom), maka semua kolom non-kunci harus bergantung pada seluruh kunci primer, bukan hanya sebagian darinya.
+
+Misalnya, pertimbangkan sebuah tabel dengan kunci primer komposit `(student_id, course_id)` dan kolom `grade`. Jika kolom `grade` hanya bergantung pada `course_id` dan bukan pada kombinasi `student_id` dan `course_id`, maka tabel tersebut melanggar 2NF.
+
+```sql
+-- Melanggar 2NF
+CREATE TABLE student_courses (
+    student_id INT,
+    course_id INT,
+    course_name VARCHAR(100), -- Hanya bergantung pada course_id, bukan seluruh kunci primer
+    grade CHAR(2),
+    PRIMARY KEY (student_id, course_id)
+);
+
+-- Sesuai dengan 2NF
+CREATE TABLE student_courses (
+    student_id INT,
+    course_id INT,
+    grade CHAR(2),
+    PRIMARY KEY (student_id, course_id)
+);
+
+CREATE TABLE courses (
+    course_id INT PRIMARY KEY,
+    course_name VARCHAR(100)
+);
+```
+
+## 3NF (Bentuk Normal Ketiga Normalisasi Basis Data)
+
+Bentuk Normal Ketiga (3NF) dibangun di atas 2NF dengan mengatasi masalah ketergantungan transitif. Sebuah tabel berada dalam 3NF jika tabel tersebut berada dalam 2NF dan setiap atribut non-primer tidak bergantung secara transitif pada kunci primer.
+
+Dengan kata lain, jika kolom non-kunci bergantung pada kolom non-kunci lain, maka tabel tersebut melanggar 3NF, dan kolom non-kunci tersebut harus dipisahkan ke dalam tabelnya sendiri.
+
+Misalnya, pertimbangkan sebuah tabel dengan kolom `student_id`, `student_name`, `class_id`, dan `class_name`. Kolom `student_name` bergantung pada `student_id`, dan kolom `class_name` bergantung pada `class_id`. Namun, kolom `class_name` juga bergantung secara transitif pada `student_id` melalui kolom `class_id`. Ini melanggar 3NF.
+
+```sql
+-- Melanggar 3NF
+CREATE TABLE student_classes (
+    student_id INT,
+    student_name VARCHAR(100),
+    class_id INT,
+    class_name VARCHAR(100),
+    PRIMARY KEY (student_id, class_id)
+);
+
+-- Sesuai dengan 3NF
+CREATE TABLE students (
+    student_id INT PRIMARY KEY,
+    student_name VARCHAR(100)
+);
+
+CREATE TABLE classes (
+    class_id INT PRIMARY KEY,
+    class_name VARCHAR(100)
+);
+
+CREATE TABLE student_classes (
+    student_id INT,
+    class_id INT,
+    PRIMARY KEY (student_id, class_id),
+    FOREIGN KEY (student_id) REFERENCES students(student_id),
+    FOREIGN KEY (class_id) REFERENCES classes(class_id)
+);
+```
+
+Dengan mengikuti prinsip-prinsip normalisasi basis data, Anda dapat membuat basis data yang terstruktur dengan baik dan efisien yang meminimalkan redundansi, menjaga integritas data, dan memfasilitasi manipulasi dan pemeliharaan data.
+
+---
+
+## Indeks (Clustered, Nonclustered, Indeks Komposit)
+
+Indeks adalah struktur data yang meningkatkan kinerja operasi pengambilan data dalam basis data. Indeks membuat representasi data yang terurut dalam tabel, memungkinkan pencarian dan kueri yang lebih cepat. Ada beberapa jenis indeks:
+
+-   **Indeks Clustered**: Indeks clustered secara fisik menyusun ulang baris dalam tabel berdasarkan nilai kunci indeks. Setiap tabel hanya dapat memiliki satu indeks clustered.
+-   **Indeks Nonclustered**: Indeks nonclustered adalah objek terpisah yang berisi nilai kunci indeks dan pointer ke baris yang sesuai dalam tabel. Sebuah tabel dapat memiliki beberapa indeks nonclustered.
+-   **Indeks Komposit**: Indeks komposit adalah indeks yang menyertakan beberapa kolom dalam kunci indeks. Indeks ini bisa berupa clustered atau nonclustered.
+
+```sql
+-- Indeks clustered
+CREATE CLUSTERED INDEX idx_customers_name
+ON customers (last_name, first_name);
+
+-- Indeks nonclustered
+CREATE NONCLUSTERED INDEX idx_orders_date
+ON orders (order_date);
+
+-- Indeks komposit
+CREATE INDEX idx_products_category_price
+ON products (category_id, price);
+```
+
+## Tipe Data
+
+Dalam dunia basis data, tipe data bagaikan berbagai bentuk wadah yang menyimpan jenis informasi tertentu. Sama seperti Anda tidak akan menyimpan cairan dalam keranjang atau benda padat dalam stoples, basis data perlu memberlakukan tipe data tertentu untuk memastikan integritas dan konsistensi data.
+
+Beberapa tipe data umum di SQL meliputi:
+
+-   `INT` atau `INTEGER`: Menyimpan bilangan bulat, seperti `42` atau `17`.
+-   `FLOAT` atau `DOUBLE`: Menyimpan bilangan desimal, seperti `3.14159` atau `0.00005`.
+-   `VARCHAR` atau `TEXT`: Menyimpan data teks, seperti nama atau deskripsi.
+-   `DATE` atau `DATETIME`: Menyimpan nilai tanggal dan waktu, seperti `'2023-05-06'` atau `'2024-01-01 12:34:56'`.
+-   `BOOLEAN`: Menyimpan nilai true/false, seperti `1` (true) atau `0` (false).
+
+Memilih tipe data yang tepat sangat penting karena memengaruhi bagaimana data disimpan, dikueri, dan dimanipulasi. Misalnya, mencoba menyimpan string besar dalam kolom `INT` akan menghasilkan kesalahan atau pemotongan data.
+
+```sql
+CREATE TABLE users (
+    id INT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    age INT,
+    is_active BOOLEAN DEFAULT 1
+);
+```
+
+Dalam contoh ini, kita membuat tabel `users` dengan kolom untuk `id` (integer), `name` (string hingga 50 karakter), `age` (integer), dan `is_active` (boolean, dengan nilai default `1` atau true).
+
+---
+
+## Pengantar Join
+
+Join bagaikan jembatan yang menghubungkan tabel-tabel berbeda dalam basis data, memungkinkan Anda menggabungkan dan mengambil data terkait dari berbagai sumber. Join adalah konsep fundamental dalam basis data relasional dan penting untuk mengkueri serta memanipulasi data secara efisien.
+
+![Gambar Join](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/iks7pvzjikxzgqicjh2x.png)
+
+## Inner Join
+
+Inner join seperti jabat tangan persahabatan antara dua tabel, di mana hanya baris yang memiliki nilai yang cocok di kedua tabel yang disertakan dalam set hasil. Ini adalah cara untuk menggabungkan data dari beberapa tabel berdasarkan kolom umum atau sekumpulan kolom.
+
+```sql
+SELECT users.name, orders.order_date
+FROM users
+INNER JOIN orders ON users.id = orders.user_id;
+```
+
+Dalam contoh ini, kita mengambil kolom `name` dari tabel `users` dan kolom `order_date` dari tabel `orders`, tetapi hanya untuk baris di mana `id` dalam tabel `users` cocok dengan `user_id` dalam tabel `orders`.
+
+## Inner Join pada 3 Tabel (Contoh)
+
+Misalkan kita memiliki tiga tabel: `users`, `orders`, dan `products`. Kita ingin mengambil nama pengguna, tanggal pesanan, dan nama produk untuk setiap pesanan. Kita dapat mencapai ini dengan melakukan inner join di ketiga tabel:
+
+```sql
+SELECT users.name, orders.order_date, products.product_name
+FROM users
+INNER JOIN orders ON users.id = orders.user_id
+INNER JOIN products ON orders.product_id = products.id;
+```
+
+Di sini, kita pertama-tama menggabungkan tabel `users` dan `orders` pada kolom `id` dan `user_id`. Kemudian, kita menggabungkan hasil dari join tersebut dengan tabel `products` pada kolom `product_id` dan `id`. Dengan cara ini, kita dapat mengambil data dari ketiga tabel dalam satu kueri, tetapi hanya untuk baris di mana kondisi join terpenuhi.
+
+## Pengantar Outer Join
+
+Meskipun inner join seperti jabat tangan yang ramah, outer join lebih seperti pelukan selamat datang. Mereka tidak hanya menyertakan baris yang cocok dari kedua tabel, tetapi juga baris yang tidak cocok dari satu atau kedua tabel, tergantung pada jenis outer join.
+
+## Right Outer Join
+
+Right outer join seperti pelukan hangat dari tabel kanan ke tabel kiri. Ini menyertakan semua baris dari tabel kanan, bersama dengan baris yang cocok dari tabel kiri. Jika tidak ada baris yang cocok di tabel kiri, hasilnya akan berisi nilai `NULL` untuk kolom tabel kiri.
+
+```sql
+SELECT users.name, orders.order_date
+FROM users
+RIGHT OUTER JOIN orders ON users.id = orders.user_id;
+```
+
+Dalam contoh ini, kita mengambil semua baris dari tabel `orders` (tabel kanan), bersama dengan nilai `name` yang cocok dari tabel `users` (tabel kiri). Jika pesanan tidak memiliki pengguna yang cocok, kolom `name` akan berisi `NULL`.
+
+## JOIN dengan Kolom NOT NULL
+
+Terkadang, Anda mungkin ingin melakukan join hanya pada kolom yang tidak null. Ini dapat berguna ketika Anda ingin mengecualikan baris dengan data yang hilang dari set hasil.
+
+```sql
+SELECT users.name, orders.order_date
+FROM users
+INNER JOIN orders ON users.id = orders.user_id AND users.name IS NOT NULL;
+```
+
+Dalam contoh ini, kita melakukan inner join antara tabel `users` dan `orders`, tetapi kita menambahkan kondisi tambahan `users.name IS NOT NULL` untuk memastikan bahwa hanya baris dengan nilai `name` yang tidak null yang disertakan dalam set hasil.
+
+## Outer Join di Seluruh 3 Tabel
+
+Mirip dengan contoh inner join, kita dapat melakukan outer join di seluruh beberapa tabel. Misalkan kita ingin mengambil semua pesanan, bersama dengan nama pengguna dan nama produk, bahkan jika ada nilai yang hilang di tabel `users` atau `products`.
+
+```sql
+SELECT users.name, orders.order_date, products.product_name
+FROM orders
+LEFT OUTER JOIN users ON orders.user_id = users.id
+LEFT OUTER JOIN products ON orders.product_id = products.id;
+```
+
+Di sini, kita mulai dengan tabel `orders` dan melakukan left outer join dengan tabel `users` dan `products`. Ini memastikan bahwa semua pesanan disertakan dalam set hasil, bersama dengan nama pengguna dan nama produk yang cocok jika tersedia. Jika tidak ada baris yang cocok di tabel `users` atau `products`, kolom yang bersangkutan akan berisi nilai `NULL`.
+
+## Alias
+
+Alias seperti nama panggilan untuk tabel atau kolom dalam kueri SQL. Alias dapat membuat kueri lebih mudah dibaca dan dipahami, terutama saat berurusan dengan nama tabel atau kolom yang panjang, atau saat mereferensikan tabel yang sama beberapa kali dalam kueri.
+
+```sql
+SELECT u.name, o.order_date, p.product_name
+FROM users u
+INNER JOIN orders o ON u.id = o.user_id
+INNER JOIN products p ON o.product_id = p.id;
+```
+
+Dalam contoh ini, kita menggunakan alias `u` untuk tabel `users`, `o` untuk tabel `orders`, dan `p` untuk tabel `products`. Ini membuat kueri lebih ringkas dan mudah dibaca, tanpa harus mengulang nama tabel lengkap berkali-kali.
+
+## Self Join
+
+Self join seperti tabel yang sedang berbicara dengan dirinya sendiri. Ini adalah cara untuk menggabungkan tabel dengan dirinya sendiri, berdasarkan kondisi atau hubungan tertentu dalam tabel yang sama. Ini dapat berguna saat berurusan dengan struktur data hierarkis atau rekursif, seperti hubungan karyawan-manajer atau kategori bersarang.
+
+```sql
+SELECT e.name AS employee, m.name AS manager
+FROM employees e
+LEFT OUTER JOIN employees m ON e.manager_id = m.id;
+```
+
+Dalam contoh ini, kita melakukan self join pada tabel `employees` untuk mengambil nama setiap karyawan dan nama manajer yang sesuai. Kita menggunakan left outer join untuk memastikan bahwa semua karyawan disertakan dalam set hasil, bahkan jika mereka tidak memiliki manajer yang ditugaskan.
+
+---
+
+## Bahasa Markup Basis Data (DBML)
+
+Database Modeling Language (DBML) adalah bahasa markup yang sederhana dan intuitif untuk menggambarkan struktur basis data relasional. Ini menyediakan cara yang mudah dibaca manusia untuk mendefinisikan tabel, kolom, hubungan, dan kendala, sehingga mudah untuk mengomunikasikan dan berkolaborasi dalam desain basis data.
+
+**Memulai dengan DBML**
+
+Untuk memulai DBML, Anda memerlukan editor teks dan pemahaman dasar tentang konsep basis data. Mari kita buat file DBML pertama kita:
+
+```sql
+// my_database.dbml
+
+Table users {
+  id int [pk, increment]
+  username varchar
+  email varchar [unique]
+  created_at datetime [default: `now()`]
+}
+```
+
+Dalam contoh ini, kita telah mendefinisikan tabel `users` dengan kolom untuk `id`, `username`, `email`, dan `created_at`. Tag `[pk]` menentukan bahwa `id` adalah kunci primer, `[increment]` menunjukkan auto-incrementing, `[unique]` memastikan keunikan untuk `email`, dan `[default:` now()`]` menetapkan nilai default `created_at` ke timestamp saat ini.
+
+**Membuat Tabel**
+
+DBML memungkinkan Anda untuk mendefinisikan beberapa tabel dan kolomnya dalam satu file. Mari kita tambahkan lebih banyak tabel ke basis data kita:
+
+```sql
+// my_database.dbml
+
+Table users {
+  id int [pk, increment]
+  username varchar
+  email varchar [unique]
+  created_at datetime [default: `now()`]
+}
+
+Table posts {
+  id int [pk, increment]
+  title varchar
+  content text
+  user_id int [ref: > users.id]
+  created_at datetime [default: `now()`]
+}
+```
+
+Dalam contoh ini, kita telah menambahkan tabel `posts` dengan kolom untuk `id`, `title`, `content`, `user_id`, dan `created_at`. Tag `[ref: > users.id]` membangun hubungan kunci asing antara kolom `user_id` di tabel `posts` dan kolom `id` di tabel `users`.
+
+**Mendefinisikan Hubungan**
+
+DBML mendukung berbagai jenis hubungan antar tabel, termasuk satu-ke-satu, satu-ke-banyak, dan banyak-ke-banyak. Mari kita definisikan beberapa hubungan dalam basis data kita:
+
+```sql
+// my_database.dbml
+
+Table users {
+  id int [pk, increment]
+  username varchar
+  email varchar [unique]
+  created_at datetime [default: `now()`]
+}
+
+Table posts {
+  id int [pk, increment]
+  title varchar
+  content text
+  user_id int [ref: > users.id]
+  created_at datetime [default: `now()`]
+}
+
+Ref: users.id < posts.user_id
+```
+
+Dalam contoh ini, kita telah mendefinisikan hubungan satu-ke-banyak antara tabel `users` dan `posts`. Baris `Ref: users.id < posts.user_id` menentukan bahwa kolom `id` di tabel `users` direferensikan oleh kolom `user_id` di tabel `posts`.
+
+**Menambahkan Kendala (Constraints)**
+
+Kendala memastikan integritas data dan menerapkan aturan pada basis data. DBML mendukung berbagai kendala seperti kunci primer, kunci asing, kendala unik, dan nilai default. Mari kita tambahkan beberapa kendala ke tabel kita:
+
+```sql
+// my_database.dbml
+
+Table users {
+  id int [pk, increment]
+  username varchar [unique]
+  email varchar [unique]
+  created_at datetime [default: `now()`]
+}
+
+Table posts {
+  id int [pk, increment]
+  title varchar
+  content text
+  user_id int [ref: > users.id]
+  created_at datetime [default: `now()`]
+}
+
+Ref: users.id < posts.user_id
+```
+
+Dalam contoh yang diperbarui ini, kita telah menambahkan kendala `[unique]` ke kolom `username` di tabel `users` untuk memastikan bahwa setiap nama pengguna unik.
+
+**Mendokumentasikan Basis Data Anda**
+
+DBML memungkinkan Anda menambahkan komentar dan anotasi ke skema basis data Anda, sehingga lebih mudah untuk memahami dan memelihara. Mari kita dokumentasikan tabel kita dengan komentar:
+
+```sql
+// my_database.dbml
+
+Table users {
+  id int [pk, increment] // Pengidentifikasi unik untuk pengguna
+  username varchar [unique] // Nama pengguna
+  email varchar [unique] // Alamat email pengguna
+  created_at datetime [default: `now()`] // Tanggal dan waktu saat pengguna dibuat
+}
+
+Table posts {
+  id int [pk, increment] // Pengidentifikasi unik untuk postingan
+  title varchar // Judul postingan
+  content text // Isi postingan
+  user_id int [ref: > users.id] // ID pengguna yang membuat postingan
+  created_at datetime [default: `now()`] // Tanggal dan waktu saat postingan dibuat
+}
+
+Ref: users.id < posts.user_id // Hubungan antara pengguna dan postingan
+```
+
+**Manfaat DBML**
+
+-   Sintaks yang sederhana dan mudah dibaca manusia
+-   Pendekatan agnostik-basis data
+-   Alat visualisasi gratis di [dbdiagram.io](dbdiagram.io)
+-   Konvensi yang konsisten untuk keterbacaan dan pemeliharaan
+-   Dokumentasi dan contoh yang ekstensif
+
+---
+
+## Kesimpulan
+
+Sebagai penutup, desain basis data relasional membentuk tulang punggung organisasi data yang efisien dalam aplikasi modern. Memahami prinsip-prinsipnya memberdayakan Anda untuk menciptakan basis data yang kuat dan terukur. Selanjutnya, kita akan mendalami sintaks SQL, membuka kekuatan untuk berinteraksi dengan basis data secara efektif. Tetap ikuti eksplorasi kita ke dalam dunia SQL!

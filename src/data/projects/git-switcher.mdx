@@ -1,0 +1,125 @@
+---
+name: Git Switcher
+type: side
+image: /git-switcher.png
+sourceCode: https://github.com/0xtbug/gitswitcher
+technologies:
+  - JavaScript
+  - Node.js
+  - NPM
+description: GitSwitcher adalah tool command-line untuk mengelola beberapa akun GitHub dengan mudah. Memungkinkan pengguna berpindah antar akun GitHub hanya dengan perintah sederhana.
+---
+
+# GitSwitcher (gs) | Multiple GitHub Accounts Made Easy
+![Screenshot](/git-switcher.png)
+
+## Introduction
+**GitSwitcher** adalah alat berbasis command-line yang memudahkan pengelolaan banyak akun GitHub pada satu perangkat.
+Dengan GitSwitcher, pengguna dapat menambahkan, mengubah, menghapus, dan beralih antar akun GitHub menggunakan perintah singkat dan intuitif.
+
+---
+
+## 🌟 Key Features
+- **Tambah Akun** – Simpan kredensial beberapa akun GitHub.
+- **Edit Akun** – Perbarui informasi akun yang sudah tersimpan.
+- **Hapus Akun** – Hapus akun yang tidak lagi digunakan.
+- **Switch Akun Cepat** – Ganti akun GitHub aktif hanya dengan satu perintah.
+- **List Akun** – Tampilkan daftar semua akun yang terkonfigurasi.
+
+---
+
+## 🚀 Installation
+
+### Instalasi sebagai paket global NPM
+```bash
+npm install -g git-account-switcher
+```
+
+### Instalasi Manual
+
+1. Clone repositori ini:
+
+   ```bash
+   git clone https://github.com/0xtbug/gitswitcher.git
+   cd gitswitcher
+   ```
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+3. Jalankan:
+
+   ```bash
+   npm link
+   ```
+
+   Setelah ini, perintah `gs` akan tersedia secara global di terminal Anda.
+
+---
+
+## 💻 Usage
+
+### Tambah akun baru
+
+```bash
+gs add <email> <username>
+```
+
+### Edit akun yang ada
+
+```bash
+gs edit <no> <email> <username>
+```
+
+### Hapus akun
+
+```bash
+gs del <no>
+```
+
+### Set akun aktif
+
+```bash
+gs set <no>
+```
+
+### Lihat semua akun
+
+```bash
+gs list
+```
+
+---
+
+## 📌 Contoh Penggunaan
+
+```bash
+# Tambah akun kerja
+gs add "work@example.com" "work-username"
+
+# Tambah akun pribadi
+gs add "personal@example.com" "personal-username"
+
+# Lihat semua akun
+gs list
+
+# Beralih ke akun #1
+gs set 1
+
+# Edit akun #2
+gs edit 2 "new@example.com" "new-username"
+
+# Hapus akun #1
+gs del 1
+```
+
+---
+
+## 🔗 Panduan Mengatur Banyak Akun GitHub
+
+Lihat panduan lengkap di sini: [GitHub Multiple Accounts Setup](https://gist.github.com/oanhnn/80a89405ab9023894df7)
+
+---
+
+Built with ❤️ untuk mempermudah pengelolaan banyak akun GitHub.

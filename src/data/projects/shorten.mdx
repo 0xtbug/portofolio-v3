@@ -1,0 +1,91 @@
+---
+name: Shorten
+type: side
+image: /shorten.png
+sourceCode: https://github.com/0xtbug/shorten
+preview: https://shorten.vercel.app/
+technologies:
+  - Next.js
+  - TypeScript
+  - Tailwind CSS
+  - shadcn/ui
+  - Prisma
+  - PostgreSQL
+  - JWT
+  - bcrypt
+  - Zod
+description: Shorten adalah aplikasi web modern untuk mempersingkat URL, memudahkan pengguna dalam membagikan dan mengelola tautan panjang. Dibangun dengan Next.js dan Prisma, aplikasi ini menghadirkan antarmuka yang ramah pengguna, autentikasi, dan fitur manajemen URL.
+---
+
+# Shorten | URL Shortening Made Easy
+![Screenshot](/shorten.png)
+
+### Introduction
+**Shorten** adalah aplikasi pemendek URL yang modern dan mudah digunakan, dibangun menggunakan **Next.js** dan **Prisma ORM**.
+Aplikasi ini memungkinkan pengguna membuat versi pendek dari URL panjang agar lebih mudah dibagikan dan dikelola, baik untuk kebutuhan pribadi maupun profesional.
+
+Dengan Shorten, pengguna dapat mengelola tautan secara efektif, melacak jumlah kunjungan, dan menyesuaikan kode tautan sesuai kebutuhan.
+
+---
+
+## 🌟 Key Features
+- **Autentikasi Pengguna** – Registrasi, login, dan logout aman.
+- **Pemendekan URL** – Buat URL pendek dari tautan panjang dengan opsi kode kustom.
+- **Daftar URL** – Lihat semua tautan yang pernah dipendekkan beserta jumlah kunjungannya.
+- **Salin Cepat** – Salin URL pendek ke clipboard dengan sekali klik.
+- **Hapus Tautan** – Kelola dan hapus URL yang tidak dibutuhkan.
+- **Redirect Otomatis** – Mengarahkan pengguna ke URL asli saat tautan pendek diakses.
+
+---
+
+## 🚀 Getting Started
+
+1. **Salin repositori**
+   ```bash
+   git clone https://github.com/0xtbug/shorten.git
+   cd shorten
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Konfigurasi environment variables**
+   Buat file `.env` di root project dan isi dengan:
+
+   ```
+   DATABASE_URL="string_koneksi_postgresql_anda"
+   JWT_SECRET="jwt_secret_anda"
+   NEXT_PUBLIC_BASE_URL="http://localhost:3000"
+   ```
+
+4. **Set up database**
+
+   ```bash
+   npx prisma migrate dev
+   ```
+
+5. **Jalankan server development**
+
+   ```bash
+   npm run dev
+   ```
+
+   Buka [http://localhost:3000](http://localhost:3000) di browser Anda.
+
+---
+
+## 🌍 Deployment
+
+Aplikasi ini dirancang agar mudah dideploy di **Vercel**:
+
+1. Push kode ke GitHub.
+2. Hubungkan akun GitHub ke Vercel.
+3. Buat project baru di Vercel dan pilih repositori Anda.
+4. Konfigurasikan environment variables di pengaturan project Vercel.
+5. Deploy!
+
+---
+
+Built with ❤️ untuk memudahkan berbagi dan mengelola tautan.

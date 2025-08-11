@@ -1,0 +1,232 @@
+---
+interface Props {
+  content: string;
+}
+
+const { content } = Astro.props;
+---
+
+<div
+  class:list={[
+    "rounded-lg border p-4",
+    "lg:sticky lg:top-18"
+  ]}
+  data-summary-container
+  data-content={content}
+>
+  <button
+    class="w-full text-left flex items-center justify-between"
+    data-summary-trigger
+  >
+    <h3 class="text-xl flex items-center gap-2 mt-0 mb-0 pt-2">
+      <span class="text-lg"><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="25" height="25" viewBox="0 0 48 48">
+<linearGradient id="szStcY_c-klGUrmyOe524a_zAkA21sxGwue_gr1" x1="18.731" x2="25.236" y1="7.57" y2="44.463" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2aa4f4"></stop><stop offset="1" stop-color="#007ad9"></stop></linearGradient><path fill="url(#szStcY_c-klGUrmyOe524a_zAkA21sxGwue_gr1)" d="M23.304,7.942l2.596,7.099c1.199,3.278,3.782,5.861,7.06,7.06l7.099,2.596	c1.231,0.45,1.231,2.19,0,2.64l-7.099,2.596c-3.278,1.199-5.861,3.782-7.06,7.06l-2.596,7.099c-0.45,1.231-2.19,1.231-2.64,0	l-2.596-7.099c-1.199-3.278-3.782-5.861-7.06-7.06l-7.099-2.596c-1.231-0.45-1.231-2.19,0-2.64l7.099-2.596	c3.278-1.199,5.861-3.782,7.06-7.06l2.596-7.099C21.113,6.711,22.854,6.711,23.304,7.942z"></path><linearGradient id="szStcY_c-klGUrmyOe524b_zAkA21sxGwue_gr2" x1="36.977" x2="39.035" y1="4.16" y2="15.828" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2aa4f4"></stop><stop offset="1" stop-color="#007ad9"></stop></linearGradient><path fill="url(#szStcY_c-klGUrmyOe524b_zAkA21sxGwue_gr2)" d="M38.82,4.596l0.623,2.049	c0.279,0.916,0.996,1.634,1.913,1.913l2.049,0.623c0.804,0.245,0.804,1.383,0,1.628l-2.049,0.623	c-0.916,0.279-1.634,0.996-1.913,1.913l-0.623,2.049c-0.245,0.804-1.383,0.804-1.628,0l-0.623-2.049	c-0.279-0.916-0.996-1.634-1.913-1.913l-2.049-0.623c-0.804-0.245-0.804-1.383,0-1.628l2.049-0.623	c0.916-0.279,1.634-0.996,1.913-1.913l0.623-2.049C37.437,3.792,38.575,3.792,38.82,4.596z"></path>
+</svg></span>
+      AI Summary
+    </h3>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="transform transition-transform duration-200"
+      data-chevron
+    >
+      <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
+  </button>
+
+  <div
+    class="overflow-hidden transition-[max-height,opacity] duration-300 max-h-0 opacity-0"
+    data-summary-content
+  >
+    <div
+      class="pt-4 overflow-y-auto md:max-h-[70vh] max-h-[50vh] scroll-container"
+      data-summary-scroll
+    >
+      <div class="hidden transition-opacity duration-200 space-y-4" data-loading>
+        <div class="flex items-center gap-2">
+          <div class="animate-spin rounded-full h-4 w-4 border-2 border-foreground/20 border-l-foreground"></div>
+          <span class="text-base text-foreground/70">Generating summary...</span>
+        </div>
+
+        <div class="animate-pulse space-y-3">
+          <div class="h-4 bg-foreground/10 rounded w-3/4"></div>
+          <div class="h-4 bg-foreground/10 rounded w-5/6"></div>
+          <div class="h-4 bg-foreground/10 rounded w-4/5"></div>
+          <div class="h-4 bg-foreground/10 rounded w-2/3"></div>
+          <div class="space-y-2">
+            <div class="h-4 bg-foreground/10 rounded w-5/6"></div>
+            <div class="h-4 bg-foreground/10 rounded w-3/4"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hidden transition-opacity duration-200 text-base leading-relaxed font-normal text-foreground/70 whitespace-pre-wrap break-words pb-4" data-content-summary></div>
+      <p class="hidden transition-opacity duration-200 text-base text-red-500" data-error>Unable to generate summary at this time.</p>
+    </div>
+  </div>
+</div>
+
+<style>
+  [data-loading].opacity-0,
+  [data-content-summary].opacity-0,
+  [data-error].opacity-0 {
+    opacity: 0;
+  }
+
+  .scroll-container {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--foreground-rgb), 0.3) transparent;
+  }
+
+  .scroll-container::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scroll-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scroll-container::-webkit-scrollbar-thumb {
+    background-color: rgba(var(--foreground-rgb), 0.3);
+    border-radius: 3px;
+  }
+
+  [data-summary-scroll] > div {
+    margin-right: 6px;
+  }
+
+  @media (pointer: coarse) {
+    .scroll-container {
+      -webkit-overflow-scrolling: touch;
+      scroll-padding: 10px;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const container = document.querySelector('[data-summary-container]');
+    if (!container) return;
+
+    const content = container.getAttribute('data-content');
+    if (!content) return;
+
+    const trigger = container.querySelector('[data-summary-trigger]');
+    const chevron = container.querySelector('[data-chevron]') as HTMLElement;
+    const contentEl = container.querySelector('[data-summary-content]') as HTMLElement;
+    const loadingEl = container.querySelector('[data-loading]') as HTMLElement;
+    const summaryEl = container.querySelector('[data-content-summary]') as HTMLElement;
+    const errorEl = container.querySelector('[data-error]') as HTMLElement;
+    const scrollEl = container.querySelector('[data-summary-scroll]') as HTMLElement;
+
+    let isGenerated = false;
+    let isExpanded = false;
+
+    async function generateSummary() {
+      if (isGenerated) {
+        loadingEl?.classList.add('hidden');
+        summaryEl?.classList.remove('hidden');
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/generate-summary', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ content }),
+        });
+
+        if (!response.ok) throw new Error('Failed to generate summary');
+
+        const data = await response.json();
+
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        if (loadingEl && summaryEl) {
+          loadingEl.style.opacity = '0';
+          await new Promise(resolve => setTimeout(resolve, 200));
+          loadingEl.classList.add('hidden');
+          summaryEl.style.opacity = '0';
+          summaryEl.textContent = data.summary;
+          summaryEl.classList.remove('hidden');
+
+          setTimeout(() => {
+            updateContentHeight();
+            if (summaryEl) {
+              summaryEl.style.opacity = '1';
+            }
+          }, 50);
+        }
+
+        isGenerated = true;
+
+      } catch (error) {
+        console.error('Error generating summary:', error);
+        if (loadingEl && errorEl) {
+          loadingEl.style.opacity = '0';
+          await new Promise(resolve => setTimeout(resolve, 200));
+          loadingEl.classList.add('hidden');
+          errorEl.classList.remove('hidden');
+        }
+      }
+    }
+
+    let lastHeight = 0;
+
+    function updateContentHeight() {
+      if (!contentEl || !scrollEl) return;
+      const newHeight = scrollEl.scrollHeight;
+      lastHeight = newHeight;
+      contentEl.style.maxHeight = `${newHeight}px`;
+    }
+
+    function toggleSummary() {
+      if (!contentEl || !chevron || !scrollEl) return;
+
+      isExpanded = !isExpanded;
+
+      chevron.style.transform = isExpanded ? 'rotate(180deg)' : '';
+
+      if (isExpanded) {
+        if (!isGenerated) {
+          loadingEl?.classList.remove('hidden');
+          if (summaryEl) summaryEl.classList.add('hidden');
+          if (errorEl) errorEl.classList.add('hidden');
+        } else {
+          if (summaryEl) summaryEl.classList.remove('hidden');
+        }
+
+        if (isGenerated && lastHeight > 0) {
+          contentEl.style.maxHeight = `${lastHeight}px`;
+        } else {
+          contentEl.style.maxHeight = `${scrollEl.scrollHeight}px`;
+        }
+        contentEl.style.opacity = '1';
+
+        setTimeout(() => {
+          updateContentHeight();
+        }, 50);
+
+        if (!isGenerated) {
+          setTimeout(() => {
+            generateSummary();
+          }, 300);
+        }
+      } else {
+        contentEl.style.maxHeight = '0';
+        contentEl.style.opacity = '0';
+      }
+    }
+
+    trigger?.addEventListener('click', toggleSummary);
+  });
+</script>
