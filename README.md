@@ -4,9 +4,8 @@ Selamat datang di repositori portofolio pribadi saya! Website portofolio modern 
 
 ## ✨ Preview
 
-![Portfolio Preview](public/screenshot-light.png)
-
-**🌐 Live Demo:** [Kunjungi Website](#)
+![Portfolio Preview](https://github.com/user-attachments/assets/e330c8b9-1902-42a0-a18a-6fac9c2f5c92)
+**🌐 Live Demo:** [Kunjungi Website](https://tubagusnm.com/)
 
 ## 🛠️ Tech Stack
 
