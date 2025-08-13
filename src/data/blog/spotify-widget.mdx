@@ -1,0 +1,658 @@
+---
+pubDatetime: 2025-08-14
+title: Integrasi Spotify Widget Real-time ke Aplikasi Modern
+category: frontend
+draft: false
+image: /og-images/articles/sp-widget.png
+tags:
+  - frontend
+  - learning
+  - api
+  - widget
+description: Panduan komprehensif mengintegrasikan Spotify Widget real-time dengan React, Next.js, dan framework modern lainnya. Lengkap dengan setup Spotify API, authentication, dan contoh implementasi.
+---
+
+![Gambar Sampul](/og-images/articles/sp-widget.png)
+
+# Tutorial: Integrasi Spotify Widget Real-time ke Aplikasi Modern
+
+Pernah penasaran gimana cara menampilkan lagu yang sedang kamu dengarkan di Spotify langsung di aplikasi React atau aplikasi modern lainnya?
+Di tutorial ini, kita bakal bikin widget Spotify yang up-to-date secara real-time, lengkap dengan informasi lagu, artis, dan cover album.
+Cocok banget buat portofolio, dashboard musik, atau sekadar buat pamer playlist favorit ke teman-teman!
+
+## Persiapan Spotify App
+
+Sebelum memulai coding, kita perlu membuat aplikasi di Spotify Developer Dashboard.
+
+### Langkah 1: Buat Spotify App
+
+1. Kunjungi [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
+2. Login dengan akun Spotify Anda
+3. Klik **"Create App"**
+4. Isi form dengan informasi berikut:
+   - **App name**: "My Spotify Widget"
+   - **App description**: "Widget untuk menampilkan lagu yang sedang diputar"
+   - **Redirect URI**: `http://127.0.0.1:3000/callback`
+5. Centang **Web API** dan setujui terms of service
+6. Klik **"Save"**
+
+### Langkah 2: Dapatkan Credentials
+
+Setelah app dibuat, Anda akan mendapatkan:
+- **Client ID**: Copy dan simpan
+- **Client Secret**: Copy dan simpan (jangan share ke publik!)
+
+### Langkah 3: Generate Refresh Token
+
+Refresh token diperlukan untuk mengautentikasi aplikasi dan mendapatkan access token secara otomatis. Ikuti langkah-langkah berikut:
+
+#### Step 1: Generate Authorization Code
+
+1. **Buat URL Authorization dengan scope yang diperlukan:**
+   ```
+   https://accounts.spotify.com/en/authorize?client_id=<your_client_id>&response_type=code&redirect_uri=http%3A%2F%2F127.0.0.1:3000&scope=user-read-currently-playing
+   ```
+
+   Ganti `<your_client_id>` dengan Client ID dari langkah sebelumnya.
+
+2. **Buka URL tersebut di browser** dan klik "Authorize"
+
+3. **Setelah authorize, Anda akan diredirect ke URL seperti ini:**
+   ```
+   http://127.0.0.1:3000/?code=<authorization_code>
+   ```
+
+   Copy value dari parameter `code` - ini adalah authorization code yang akan kita gunakan.
+
+#### Step 2: Generate Base64 Encoded Credentials
+
+1. **Buat string gabungan dari Client ID dan Client Secret:**
+   ```
+   clientid:clientsecret
+   ```
+
+2. **Encode string tersebut ke Base64.** Anda bisa menggunakan:
+   - Online tool: [base64encode.org](https://www.base64encode.org/)
+   - Terminal: `echo -n "clientid:clientsecret" | base64`
+   - Node.js: `Buffer.from('clientid:clientsecret').toString('base64')`
+
+#### Step 3: Request Refresh Token
+
+Jalankan curl command berikut (atau gunakan [reqbin.com/curl](https://reqbin.com/curl)):
+
+```bash
+curl -H "Authorization: Basic <your_base64_encoded_credentials>" \
+     -H "Content-Type: application/x-www-form-urlencoded" \
+     -d "grant_type=authorization_code" \
+     -d "code=<your_authorization_code>" \
+     -d "redirect_uri=http%3A%2F%2F127.0.0.1:3000" \
+     https://accounts.spotify.com/api/token
+```
+
+> 📝 **Catatan Penting:**
+> - Ganti `<your_base64_encoded_credentials>` dengan hasil encoding dari Step 2
+> - Ganti `<your_authorization_code>` dengan code yang didapat dari Step 1
+> - Jika error 400 "Invalid authorization code", kemungkinan code sudah expired - ulangi dari Step 1
+
+**Response akan berupa JSON seperti ini:**
+```json
+{
+    "access_token": "BQD...woC",
+    "token_type": "Bearer",
+    "expires_in": 3600,
+    "refresh_token": "AQD...w-e4",
+    "scope": "user-read-currently-playing"
+}
+```
+
+**Simpan `refresh_token`** - inilah yang akan kita gunakan di aplikasi. Refresh token tidak memiliki expiration date dan hanya akan invalid jika user mencabut akses aplikasi.
+
+> 💡 **Tips**: Refresh token ini bersifat permanen sampai user mencabut akses. Simpan dengan aman dan jangan share ke publik!
+
+---
+
+## Setup Environment Variables
+
+Buat file `.env` di root project Anda:
+
+```env
+# .env
+CLIENT_ID=your_spotify_client_id_here
+CLIENT_SECRET=your_spotify_client_secret_here
+REFRESH_TOKEN=your_spotify_refresh_token_here
+```
+
+> ⚠️ **Penting**: Jangan commit file `.env` ke repository! Tambahkan ke `.gitignore`
+
+---
+
+## Membuat Library Functions
+
+### 1. Config File (`your/path/config.ts`)
+
+```typescript
+// your/path/config.ts
+export const CURRENTLY_PLAYING_ENDPOINT = 'https://api.spotify.com/v1/me/player/currently-playing';
+export const TOKEN_ENDPOINT = 'https://accounts.spotify.com/api/token';
+```
+
+### 2. Spotify Authentication (`your/path/lib/spotifyAuth.ts`)
+
+```typescript
+// your/path/lib/spotifyAuth.ts
+import { Buffer } from 'node:buffer'
+import * as process from 'node:process'
+import { config } from 'dotenv'
+import { TOKEN_ENDPOINT } from '@/lib/config'
+
+// Load environment variables
+config()
+
+export async function getAccessToken(): Promise<string> {
+  const CLIENT_ID = process.env.CLIENT_ID
+  const CLIENT_SECRET = process.env.CLIENT_SECRET
+  const REFRESH_TOKEN = process.env.REFRESH_TOKEN
+
+  if (!CLIENT_ID || !CLIENT_SECRET || !REFRESH_TOKEN) {
+    throw new Error('Missing Spotify credentials in environment variables')
+  }
+
+  // Encode credentials in base64
+  const basic = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64')
+
+  // Create request body
+  const body = new URLSearchParams({
+    grant_type: 'refresh_token',
+    refresh_token: REFRESH_TOKEN,
+  })
+
+  // Request access token
+  const response = await fetch(TOKEN_ENDPOINT, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Basic ${basic}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: body.toString(),
+  })
+
+  if (!response.ok) {
+    const errorText = await response.text()
+    throw new Error(`Spotify token request failed: ${response.status} ${response.statusText} - ${errorText}`)
+  }
+
+  const data = await response.json()
+  if (!data?.access_token) {
+    throw new Error('No access_token returned from Spotify')
+  }
+
+  return data.access_token
+}
+```
+
+### 3. Fetch Currently Playing (`your/path/lib/spotifyPlaying.ts`)
+
+```typescript
+// your/path/lib/spotifyPlaying.ts
+import type { ISpotifyResponse } from '@/types'
+import { CURRENTLY_PLAYING_ENDPOINT } from '@/lib/config'
+import { getAccessToken } from '@/lib/spotify'
+
+export async function getCurrentlyPlaying(): Promise<ISpotifyResponse | null> {
+  try {
+    // Get access token
+    const accessToken = await getAccessToken()
+
+    // Fetch currently playing data
+    const response = await fetch(CURRENTLY_PLAYING_ENDPOINT, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+
+    if (!response.ok) {
+      return null
+    }
+
+    const data = await response.json()
+
+    // Only return track data
+    if (data.currently_playing_type !== 'track') {
+      return null
+    }
+
+    return data
+  } catch (error) {
+    console.error('Error fetching currently playing track:', error)
+    return null
+  }
+}
+```
+
+### 4. TypeScript Types (`your/path/types.ts`)
+
+```typescript
+// your/path/types.ts (tambahkan interface ini)
+export interface ISpotifyResponse {
+  repeat_state: "off" | "track" | "context";
+  shuffle_state: boolean;
+  progress_ms: number | null;
+  item: {
+    name: string;
+    album: {
+      name: string;
+      images: { url: string }[];
+      artists: { name: string }[];
+    };
+    preview_url: string | null;
+    external_urls: { spotify: string };
+    uri: string;
+    duration_ms: number;
+    type: "track";
+  } | null;
+  currently_playing_type: "track" | "episode" | "unknown";
+  is_playing: boolean;
+}
+```
+
+---
+
+## Membuat API Endpoint
+
+### API Route (`your/path/api/spotify.ts`)
+
+```typescript
+// your/path/api/spotify.ts
+import type { APIRoute } from 'astro'
+import { getCurrentlyPlaying } from '@/lib/spotifyPlaying'
+
+export const GET: APIRoute = async () => {
+  try {
+    const currentlyPlaying = await getCurrentlyPlaying()
+
+    return new Response(JSON.stringify(currentlyPlaying), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  } catch (error) {
+    console.error('Spotify API error:', error)
+    return new Response(JSON.stringify({ error: 'Failed to fetch currently playing' }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  }
+}
+```
+
+---
+
+## Membuat React Component
+
+### Spotify Widget Component (`your/path/components/SpotifyWidget.tsx`)
+
+```tsx
+// your/path/components/SpotifyWidget.tsx
+import type { ISpotifyResponse } from '@/types'
+import { useEffect, useState } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
+
+interface SpotifyWidgetData {
+  albumImageUrl: string
+  artist: string
+  isPlaying: boolean
+  songUrl: string
+  title: string
+  timePlayed: number
+  timeTotal: number
+  artistUrl: string
+}
+
+export default function SpotifyWidget() {
+  const [nowPlaying, setNowPlaying] = useState<SpotifyWidgetData | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchCurrentlyPlaying = async () => {
+      try {
+        const response = await fetch('/api/spotify')
+        if (response.ok) {
+          const data: ISpotifyResponse = await response.json()
+
+          if (data && data.item) {
+            const widgetData: SpotifyWidgetData = {
+              albumImageUrl: data.item.album.images[0]?.url || '',
+              artist: data.item.album.artists.map(artist => artist.name).join(', '),
+              isPlaying: data.is_playing,
+              songUrl: data.item.external_urls.spotify,
+              title: data.item.name,
+              timePlayed: data.progress_ms || 0,
+              timeTotal: data.item.duration_ms,
+              artistUrl: data.item.external_urls.spotify,
+            }
+            setNowPlaying(widgetData)
+            setError(null)
+          } else {
+            setNowPlaying(null)
+            setError('Currently Not Playing')
+          }
+        } else {
+          if (response.status === 204) {
+            setError('Currently Not Playing')
+          } else {
+            setError('Unable to Fetch Song')
+          }
+          setNowPlaying(null)
+        }
+      } catch (err) {
+        console.error('Error fetching currently playing:', err)
+        setError('Unable to Fetch Song')
+        setNowPlaying(null)
+      }
+      setIsLoading(false)
+    }
+
+    // Initial fetch
+    fetchCurrentlyPlaying()
+
+    // Real-time updates every second
+    const interval = setInterval(() => {
+      fetchCurrentlyPlaying()
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  // Helper functions
+  const pad = (n: number): string => {
+    return n < 10 ? `0${n}` : n.toString()
+  }
+
+  const formatTime = (ms: number) => {
+    const seconds = Math.floor(ms / 1000)
+    const minutes = Math.floor(seconds / 60)
+    const remainingSeconds = seconds % 60
+    return `${pad(minutes)}:${pad(remainingSeconds)}`
+  }
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="flex items-center space-x-4 rounded-lg border bg-card p-4">
+        <Skeleton className="h-16 w-16 rounded-md" />
+        <div className="flex-1 space-y-2">
+          <Skeleton className="h-4 w-3/4" />
+          <Skeleton className="h-3 w-1/2" />
+          <Skeleton className="h-3 w-1/4" />
+        </div>
+      </div>
+    )
+  }
+
+  // Determine display state
+  let playerState = ''
+  let displayTitle = ''
+  let displayArtist = ''
+  let albumImageUrl = '/favicon.svg'
+
+  if (nowPlaying && nowPlaying.title) {
+    playerState = nowPlaying.isPlaying ? 'PLAY' : 'PAUSE'
+    displayTitle = nowPlaying.title
+    displayArtist = nowPlaying.artist
+    albumImageUrl = nowPlaying.albumImageUrl
+  } else if (error === 'Currently Not Playing') {
+    playerState = 'OFFLINE'
+    displayTitle = 'User is'
+    displayArtist = 'currently Offline'
+  } else {
+    playerState = 'ERROR'
+    displayTitle = 'Failed to'
+    displayArtist = 'fetch song'
+  }
+
+  const shouldLinkToSpotify = playerState === 'PLAY' || playerState === 'PAUSE'
+
+  return (
+    <div className="rounded-lg border bg-card p-4">
+      <div className="flex items-center space-x-4">
+        {/* Album Image */}
+        <div className="relative flex-shrink-0">
+          {shouldLinkToSpotify ? (
+            <a href={nowPlaying?.songUrl} target="_blank" rel="noopener noreferrer">
+              <img
+                src={albumImageUrl}
+                alt="Album Cover"
+                className="h-16 w-16 rounded-md object-cover transition-opacity hover:opacity-80"
+              />
+            </a>
+          ) : (
+            <img
+              src={albumImageUrl}
+              alt="Album Cover"
+              className="h-16 w-16 rounded-md object-cover"
+            />
+          )}
+        </div>
+
+        {/* Song Info */}
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-sm font-medium">
+            {shouldLinkToSpotify ? (
+              <a
+                href={nowPlaying?.songUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline"
+              >
+                {displayTitle}
+              </a>
+            ) : (
+              displayTitle
+            )}
+          </div>
+
+          <div className="truncate text-xs text-muted-foreground">
+            {shouldLinkToSpotify ? (
+              <a
+                href={nowPlaying?.artistUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline"
+              >
+                {displayArtist}
+              </a>
+            ) : (
+              displayArtist
+            )}
+          </div>
+
+          {nowPlaying && (
+            <div className="mt-1 text-xs text-muted-foreground">
+              {formatTime(nowPlaying.timePlayed)} / {formatTime(nowPlaying.timeTotal)}
+            </div>
+          )}
+        </div>
+
+        {/* Player State Icon */}
+        <div className="flex-shrink-0">
+          {playerState === 'PLAY' && (
+            <div className="text-green-500">
+              <img
+                src="/soundbar.gif"
+                alt="Now Playing"
+                className="h-6 w-6"
+                title="Now Listening"
+              />
+            </div>
+          )}
+          {playerState === 'PAUSE' && (
+            <div className="text-muted-foreground">
+              <span className="text-2xl">⏸️</span>
+            </div>
+          )}
+          {playerState === 'OFFLINE' && (
+            <div className="text-muted-foreground">
+              <span className="text-2xl">📱</span>
+            </div>
+          )}
+          {playerState === 'ERROR' && (
+            <div className="text-destructive">
+              <span className="text-2xl">❌</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+```
+
+---
+
+## Integrasi ke Aplikasi
+
+### Menambahkan ke Halaman (`src/pages/index.astro`)
+Pada contoh kode dibawah ini, saya menggunakan astrojs
+
+```astro
+---
+// src/pages/index.astro
+import SpotifyWidget from '@/components/SpotifyWidget'
+// ... imports lainnya
+---
+
+<Layout title="My App">
+  <main>
+    <!-- Konten lainnya -->
+
+    <div class="mb-6">
+      <SpotifyWidget client:load />
+    </div>
+
+    <!-- Konten lainnya -->
+  </main>
+</Layout>
+```
+
+Untuk direactjs cukup import dan panggil komponen `SpotifyWidget` saja.
+
+### Install Dependencies
+
+```bash
+# Install required packages
+npm add dotenv
+
+# Jika menggunakan React Icons
+npm add react-icons
+
+# Jika menggunakan shadcn/ui
+npx shadcn-ui@latest add skeleton
+```
+
+---
+
+## Fitur Widget
+
+### Yang Bisa Dilakukan Widget Ini:
+
+1. **Real-time Updates** - Update setiap detik untuk timing yang akurat
+2. **Album Cover** - Menampilkan gambar album yang dapat diklik
+3. **Song Links** - Link ke Spotify untuk lagu dan artist
+4. **Progress Timer** - Menampilkan waktu berjalan / total durasi
+5. **State Indicators** - Visual indicator untuk play/pause/offline/error
+6. **Loading States** - Skeleton loading untuk UX yang baik
+7. **Error Handling** - Menangani berbagai error states
+8. **Responsive Design** - Tampilan yang baik di berbagai ukuran layar
+
+### Customization Options:
+
+```tsx
+// Ubah interval update (default: 1000ms)
+const interval = setInterval(() => {
+  fetchCurrentlyPlaying()
+}, 2000) // Update setiap 2 detik
+
+// Custom styling
+<div className="your-custom-classes">
+  <SpotifyWidget />
+</div>
+
+// Custom icons
+{playerState === 'PLAY' && (
+  <YourCustomPlayIcon />
+)}
+```
+
+---
+
+## Tips & Troubleshooting
+
+### Error "Missing Spotify credentials"
+
+**Solusi:**
+1. Pastikan file `.env` ada di root project
+2. Restart development server setelah menambah .env
+3. Periksa nama variable environment (case sensitive)
+
+### Error "process is not defined"
+
+**Solusi:**
+1. Pastikan menggunakan `client:load` di Astro component
+2. Environment variables hanya tersedia di server-side
+
+### Spotify API Rate Limits
+
+**Tips:**
+1. Update interval 1 detik umumnya aman untuk personal use
+2. Untuk production, pertimbangkan interval 2-3 detik
+3. Implement error retry dengan exponential backoff
+
+### Refresh Token Expired
+
+**Solusi:**
+1. Generate refresh token baru dari Spotify
+2. Update .env file dengan token baru
+3. Restart application
+
+### Styling Tips
+
+```css
+/* Custom CSS untuk marquee text jika judul panjang */
+.marquee-content {
+  animation: marquee 10s linear infinite;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+/* Hover effects */
+.spotify-widget:hover .album-cover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+```
+
+---
+
+## 🎉 Selamat!
+
+Anda telah berhasil mengintegrasikan Spotify widget real-time ke aplikasi React Anda!
+
+Widget ini akan menampilkan:
+- 🎵 Lagu yang sedang diputar
+- ⏱️ Progress timer real-time
+- 🖼️ Album cover dengan link ke Spotify
+- 🎨 State indicators yang menarik
+- 📱 Responsive design
+
+### Next Steps:
+1. **Styling**: Sesuaikan tampilan dengan design system Anda
+2. **Features**: Tambah fitur seperti previous/next controls
+3. **Analytics**: Track user interactions dengan widget
+4. **Performance**: Optimize untuk production use
