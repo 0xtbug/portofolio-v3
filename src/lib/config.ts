@@ -1,7 +1,7 @@
 export const SITE = {
   pageType: 'website',
   author: "Ahmad Tubagus Nabil Maulana",
-  profile: "https://heybagus.tech",
+  profile: "https://tubagusnm.com",
   desc: "Ahmad Tubagus Nabil Maulana's portfolio",
   title: "tubagus.nm",
   ogImage: '/og-image.jpg',

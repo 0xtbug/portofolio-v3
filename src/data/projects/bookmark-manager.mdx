@@ -1,0 +1,100 @@
+---
+name: Bookmark Manager
+type: side
+image: /bookmark-manager.png
+sourceCode: https://github.com/0xtbug/bookmark-manager
+preview: https://bm.tubagusnm.com/
+technologies:
+  - Next.js
+  - React
+  - TypeScript
+  - Tailwind CSS
+  - Radix UI
+  - Shadcn/ui
+  - Tweakcn
+  - Linkding API
+description: Bookmark Manager adalah client publik modern untuk Linkding, dibangun dengan Next.js 15, React 19, dan Tailwind CSS. Jelajahi semua bookmark yang tersimpan dengan UI elegan, integrasi mulus dengan Linkding API, serta dukungan tema gelap/terang.
+---
+
+# 📚 Bookmark Manager | Client Publik untuk Linkding
+![Screenshot](/bookmark-manager.png)
+
+## Pendahuluan
+**Bookmark Manager** adalah client web modern untuk [Linkding](https://github.com/sissbruecker/linkding).
+Dengan aplikasi ini, kamu bisa **menjelajahi, mencari, memfilter, dan mengelola semua bookmark yang tersimpan** melalui antarmuka yang bersih dan responsif.
+Dibangun dengan **Next.js 15, React 19, dan Tailwind CSS**, aplikasi ini menghadirkan pengalaman cepat, mobile-friendly, dan terintegrasi mulus dengan API Linkding.
+
+---
+
+## 🌟 Fitur Utama
+- **UI/UX Modern** – Layout responsif dengan dukungan tema gelap/terang
+- **Pencarian Canggih** – Pencarian bookmark real-time dengan filter dan sorting
+- **Manajemen Tag** – Panel tag interaktif dengan jumlah visual dan akses cepat
+- **Infinite Scrolling** – Penjelajahan mulus untuk koleksi bookmark besar
+- **Desain Mobile-First** – Antarmuka dioptimalkan untuk sentuhan dan navigasi mobile
+- **Performa Optimal** – Caching in-memory, request paralel, dan skeleton loader
+
+---
+
+## 🚀 Instalasi
+
+### Prasyarat
+- Node.js 18+
+- pnpm (disarankan) atau npm
+- Instance Linkding yang sudah berjalan
+
+### Langkah
+```bash
+# Clone repository
+git clone https://github.com/0xtbug/bookmark-manager.git
+cd bookmark-manager
+
+# Install dependencies
+pnpm install
+# atau
+npm install
+
+# Konfigurasi environment
+cp .env.example .env.local
+```
+
+Edit file `.env.local`:
+
+```env
+LINKDING_API_URL=http://alamat-linkding-anda.com
+LINKDING_API_TOKEN=token-api-anda
+```
+
+Jalankan server development:
+
+```bash
+pnpm dev
+# atau
+npm run dev
+```
+
+Buka di browser: [http://localhost:3000](http://localhost:3000) 🎉
+
+---
+
+## 💻 Penggunaan
+- Lihat semua bookmark dengan infinite scroll
+- Cari bookmark secara instan dengan filter pintar dan sorting
+- Kelola tag dengan panel interaktif dan indikator jumlah
+- Ganti tema terang/gelap dengan transisi yang mulus
+
+---
+
+## 🔧 Tech Stack
+- **Next.js 15** – Framework React dengan App Router
+- **React 19** – Versi terbaru React dengan fitur concurrent
+- **TypeScript** – Pengembangan type-safe
+- **Tailwind CSS 4** – Utility-first CSS framework
+- **Radix UI + shadcn/ui** – Komponen aksesibel dan dapat dikustomisasi
+- **Shadcn/ui** – Komponen UI yang dapat disesuaikan
+- **Lucide React** – Sistem ikon konsisten
+- **Tweakcn** – Utility untuk styling yang lebih baik
+
+---
+
+Dibangun dengan ❤️ untuk mempermudah pengelolaan bookmark Linkding anda.
