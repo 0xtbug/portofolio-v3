@@ -9,7 +9,7 @@ export const EDUCATION: Education[] = [
   },
   {
     name: "SMK Iptek Sanggabuana",
-    year: "2019 - 2021",
+    year: "2019 - 2022",
     description: "Teknik Komputer dan Jaringan",
     skills: [],
   },
